@@ -13,6 +13,7 @@ from openpyxl import Workbook
 from mapa import get_mapa
 from utils import get_kpi
 import requests
+from datetime import datetime
 
 is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
 if is_gunicorn:
@@ -32,15 +33,18 @@ colors = {
 }
 
 server = app.server
+
+#date = datetime.today().strftime('%Y-%m-%d')
 date = '2022-08-26'
 app.layout = dbc.Container(
     children=[
         dbc.Row([
                 dbc.Col(html.Div(
-                    [html.H1('COVID-19: Situación Actual por Región', style={'color': 'White','textAlign': 'center','backgroundColor':'blue'}),
-                     html.H2(f'{date}', style={'color': 'White','textAlign': 'center','backgroundColor':'gray'}),
+                    [html.H1('COVID-19: Situación Actual por Región', style={'color': 'White','textAlign': 'center','backgroundColor':'rgb(15, 105, 180)'}),
+                     html.H2(f'{date}', style={'color': 'White','textAlign': 'center','backgroundColor':'rgb(235, 60, 70)'}),
                      html.Div(
-                         [html.P('Las siguientes gráficas tienen como objetivo mantener informado a las instituciones gubernamentales, municipales, privados y población en general sobre la situación actual de Covid-19 a nivel regional/comunal en Chile.',style={'fontSize': 20}),
+                         [html.P('El objetivo de las siguientes visualizaciones es mantener informado a las distintas instituciones de gobierno, privados y población en general sobre la situación actual en la que se encuentra la pandemia por Covid-19 en Chile.',style={'fontSize': 20}),
+                          html.P("La información es desplegada a nivel regional, con datos de casos confirmados y fallecidos. A nivel comunal con datos de la evolución histórica de casos confirmados y fallecidos, además de informar el avance de las distintas dosis de vacunas a la fecha.",style={'fontSize': 20}),
                           html.P("Los datos visualizados son oficiales, los cuales reportados por el Ministerio de Salud en sus reportes diarios de Covid-19. Fuente: https://github.com/MinCiencia/Datos-COVID19",style={'fontSize': 20})
                          ])
                     ]))
@@ -102,7 +106,7 @@ app.layout = dbc.Container(
             align="center",
         ),
         dbc.Row(html.H3("   ")),
-        dbc.Row(dbc.Col(html.H3('Avance Vacunación vs Población Objetivo', style={'color': 'Black','textAlign': 'center','backgroundColor':'LightGray'}),),
+        dbc.Row(dbc.Col(html.H3('Avance Vacunación vs Población Objetivo', style={'color': 'White','textAlign': 'center','backgroundColor':'rgb(77, 77, 77)'}),),
         ),
         dbc.Row(
             [
@@ -138,7 +142,7 @@ def set_comunas_lista1(selectComuna):
 @app.callback(Output("BarraComunas", "figure"),Output("Mapa", "figure"),Output("burbujas", "figure"),Input("selectRegion", "value"))
 def update_ejer4(input1):
     #print(input1)
-    return get_barraComunas(dataTotalComunas, input1, "2022-08-01"), get_mapa(dataTotalComunas, input1, "2022-08-01"), get_bubble(df_casos_fallecidos_actual, input1)
+    return get_barraComunas(dataTotalComunas, input1, "2022-08-26"), get_mapa(dataTotalComunas, input1, "2022-08-26"), get_bubble(df_casos_fallecidos_actual, input1)
 
 @app.callback(Output("lineaComunas", "figure"), Output("lineaFallecidos", "figure"),Output("PieVacunados", "figure"),Output("PieVacunadosd2", "figure"),Output("PieVacunadosd4", "figure"),Output("PieVacunadosdRefuerzo", "figure"), Input("selectComuna", "value"))
 def update_ejer5(input1):
@@ -150,14 +154,14 @@ def update_ejer5(input1):
     Input("selectRegion", "value")
 )
 def update_titulo(value):
-    return  html.H3(f'Casos Confirmados Región: {value}', style={'color': 'White','textAlign': 'center','backgroundColor':'blue'})
+    return  html.H3(f'Casos Confirmados Región: {value}', style={'color': 'White','textAlign': 'center','backgroundColor':'rgb(15, 105, 180)'})
 
 @app.callback(
     Output('titComuna', 'children'),
     Input("selectComuna", "value")
 )
 def update_tituloComuna(value):
-    return  html.H3(f'Evolución Casos Confirmados y Fallecidos Comuna: {value}', style={'color': 'White','textAlign': 'center','backgroundColor':'blue'})
+    return  html.H3(f'Evolución Casos Confirmados y Fallecidos Comuna: {value}', style={'color': 'White','textAlign': 'center','backgroundColor':'rgb(15, 105, 180)'})
 
 
 #@app.callback(Output("Mapa", "figure"), Input("selectRegion", "value"))
